@@ -1,0 +1,31 @@
+{
+  "name": "airtouch-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web app for controlling an AirTouch 5 console on the local network",
+  "scripts": {
+    "dev": "concurrently -k -n server,web \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "node --watch server/index.js",
+    "dev:web": "vite web",
+    "dev:sim": "concurrently -k -n server,web \"node --watch server/index.js --sim\" \"npm:dev:web\"",
+    "build": "vite build web",
+    "start": "node server/index.js",
+    "start:sim": "node server/index.js --sim",
+    "sim": "node server/simulator/run.js",
+    "test": "node --test \"server/**/*.test.js\""
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}
