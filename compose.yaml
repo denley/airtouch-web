@@ -1,0 +1,9 @@
+services:
+  airtouch-web:
+    build: .
+    container_name: airtouch-web
+    # Host networking so UDP broadcast discovery of the console works.
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
