@@ -2,22 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "app-sim",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server/index.js", "--sim"],
-      "port": 3000
-    },
-    {
-      "name": "app-sim-alt",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server/index.js", "--sim"],
-      "env": { "PORT": "3100" },
-      "port": 3100
-    },
-    {
-      "name": "app",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server/index.js"],
+      "name": "dev-sim",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:sim"],
       "port": 3000
     }
   ]
