@@ -1,8 +1,7 @@
 import type { ZoneState } from '../types'
 import { formatSetpoint } from './AcCard'
-import { seriesVar } from './HistoryChart'
 import { StepButton } from './StepButton'
-import { BatteryLowIcon, BoltIcon, ClockIcon, MinusIcon, PlusIcon, WindIcon } from './icons'
+import { BatteryLowIcon, BoltIcon, ClockIcon, MinusIcon, PlusIcon, PowerIcon, WindIcon } from './icons'
 
 interface Props {
   zone: ZoneState
@@ -14,19 +13,31 @@ interface Props {
 }
 
 /**
- * One row in the zones list. Primary controls (setpoint / damper stepper and
- * the power toggle) sit in aligned columns on the right; current temperature
- * and the live damper bar stay visible as secondary info.
+ * One zone card. Hierarchy: the power button (a status rail read together with
+ * the name) and the setpoint stepper lead; current temperature and damper
+ * state sit in a quiet meta line. The name area is a second, larger tap
+ * target for the same toggle.
  */
 export function ZoneRow({ zone, setpointRange, onPower, onPercent, onSetpoint }: Props) {
   const on = zone.power !== 'off'
   const tempControlled = zone.controlMethod === 'temp' && zone.hasSensor
+  const toggle = () => onPower(on ? 'off' : 'on')
+  const damperText = on ? `${zone.openPercent}% open` : 'closed'
 
   return (
     <div className={`zone-row${on ? '' : ' is-off'}`}>
-      <div className="zr-info">
-        <div className="zr-name-row">
-          <span className="zone-dot" style={{ background: zone.hasSensor ? seriesVar(zone.id) : 'var(--text-3)' }} />
+      <button
+        className={`zr-power${on ? ' on' : ''}`}
+        onClick={toggle}
+        aria-label={`Turn ${zone.name} ${on ? 'off' : 'on'}`}
+        role="switch"
+        aria-checked={on}
+      >
+        <PowerIcon size={16} />
+      </button>
+
+      <div className="zr-info" onClick={toggle}>
+        <span className="zr-name-row">
           <span className="zr-name">{zone.name || `Zone ${zone.id + 1}`}</span>
           {zone.power === 'turbo' && (
             <span className="badge accent">
@@ -43,32 +54,25 @@ export function ZoneRow({ zone, setpointRange, onPower, onPercent, onSetpoint }:
               <BatteryLowIcon size={11} />
             </span>
           )}
-        </div>
-        <div className="zr-meta">
-          <span className="bar">
-            <i style={{ width: `${on ? zone.openPercent : 0}%` }} />
-          </span>
-          <span className="pct">{on ? `${zone.openPercent}%` : 'closed'}</span>
-        </div>
-      </div>
-
-      <div className={`zr-temp${zone.currentTemp == null ? ' na' : ''}`}>
-        {zone.currentTemp != null ? (
-          <>
-            {zone.tempStale && (
-              <span
-                className="stale"
-                title="Reading hasn't changed in over 3 hours — the sensor may have stopped reporting"
-              >
-                <ClockIcon size={12} />
-              </span>
-            )}
-            {zone.currentTemp.toFixed(1)}
-            <span className="unit">°</span>
-          </>
-        ) : (
-          '—'
-        )}
+        </span>
+        <span className="zr-meta">
+          {zone.currentTemp != null ? (
+            <>
+              {zone.tempStale && (
+                <span
+                  className="stale"
+                  title="Reading hasn't changed in over 3 hours — the sensor may have stopped reporting"
+                >
+                  <ClockIcon size={11} />
+                </span>
+              )}
+              <b className="zr-now">{zone.currentTemp.toFixed(1)}°</b>
+              <span>· {damperText}</span>
+            </>
+          ) : (
+            <span>{zone.hasSensor ? damperText : `${damperText} · no sensor`}</span>
+          )}
+        </span>
       </div>
 
       <div className="zr-sp">
@@ -102,7 +106,7 @@ export function ZoneRow({ zone, setpointRange, onPower, onPercent, onSetpoint }:
             >
               <MinusIcon size={15} />
             </StepButton>
-            <span className="sp-value pct-value">{zone.openPercent}%</span>
+            <span className="sp-value">{zone.openPercent}%</span>
             <StepButton
               className="step-btn"
               disabled={!on || zone.openPercent >= 100}
@@ -114,14 +118,6 @@ export function ZoneRow({ zone, setpointRange, onPower, onPercent, onSetpoint }:
           </>
         )}
       </div>
-
-      <button
-        className={`zone-toggle${on ? ' on' : ''}`}
-        onClick={() => onPower(on ? 'off' : 'on')}
-        aria-label={`Turn ${zone.name} ${on ? 'off' : 'on'}`}
-        role="switch"
-        aria-checked={on}
-      />
     </div>
   )
 }

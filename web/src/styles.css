@@ -1,36 +1,53 @@
 /* ---------------------------------------------------------------------------
-   AirTouch web — design tokens
+   AirTouch web — "Halo Dial" design tokens
+
+   The whole accent system hangs off two variables, --accent and --accent-2,
+   set per-AC from the current mode (see AcCard). Everything tinted — the dial
+   arc, the power glow, chips, zone setpoints — derives from those two.
 --------------------------------------------------------------------------- */
 
 :root {
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  --bg: #f4f6fa;
+  --bg: #eef1f7;
   --surface: #ffffff;
   --surface-2: #eef1f6;
-  --border: rgba(15, 23, 42, 0.09);
+  --border: rgba(15, 23, 42, 0.08);
   --text: #0f172a;
   --text-2: #55627a;
   --text-3: #8a94a8;
-  --shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px -12px rgba(15, 23, 42, 0.18);
-  --shadow-hero: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 40px -16px rgba(15, 23, 42, 0.25);
+  --shadow: 0 4px 14px -8px rgba(15, 23, 42, 0.14);
+  --shadow-hero: 0 2px 4px rgba(15, 23, 42, 0.04), 0 16px 40px -16px rgba(15, 23, 42, 0.2);
 
+  /* Mode accent pairs (gradient start / end) */
   --cool: #2f7ff0;
-  --heat: #f0742f;
-  --fan: #14a085;
+  --cool-2: #17b3a6;
+  --heat: #ed6c2d;
+  --heat-2: #f5a623;
+  --fan: #0ea885;
+  --fan-2: #34d3a8;
   --dry: #d9970f;
+  --dry-2: #eab63e;
   --auto: #8b5cf6;
+  --auto-2: #b78ef9;
+
   --off: #8a94a8;
   --danger: #e5484d;
   --warn: #d9970f;
-  --ok: #30a46c;
+  --ok: #23a668;
 
   --accent: var(--cool);
+  --accent-2: var(--cool-2);
+  /* Ink drawn on top of a gradient fill */
+  --accent-ink: #ffffff;
+  /* How far accent text is darkened toward black — light surfaces need it */
+  --accent-text-w: 82%;
+  --accent-text: color-mix(in srgb, color-mix(in srgb, var(--accent) 50%, var(--accent-2)) var(--accent-text-w), #000000);
+  --grad: linear-gradient(135deg, var(--accent), var(--accent-2));
   --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
-  --accent-softer: color-mix(in srgb, var(--accent) 7%, transparent);
 
-  --radius: 20px;
-  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-sm: 14px;
 
   /* Chart series slots (validated categorical palette, light-surface steps) */
   --s1: #2a78d6;
@@ -45,20 +62,28 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0c0f16;
-    --surface: #151a24;
-    --surface-2: #1d2432;
-    --border: rgba(255, 255, 255, 0.08);
-    --text: #edf1f7;
+    --bg: #0a0e17;
+    --surface: #141824;
+    --surface-2: #1d2431;
+    --border: rgba(255, 255, 255, 0.07);
+    --text: #eaf0f8;
     --text-2: #9aa5ba;
     --text-3: #64708a;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-hero: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 48px -16px rgba(0, 0, 0, 0.5);
-    --cool: #4d94ff;
+    --cool: #4d9fff;
+    --cool-2: #59e3d8;
     --heat: #ff8a4d;
+    --heat-2: #ffb35c;
     --fan: #2cc7a6;
+    --fan-2: #6fe6c3;
     --dry: #eaaf3b;
+    --dry-2: #f6cf7d;
     --auto: #a78bfa;
+    --auto-2: #c9b1ff;
+    --ok: #35d49a;
+    --accent-ink: #06131f;
+    --accent-text-w: 100%;
     --s1: #3987e5;
     --s2: #d95926;
     --s3: #199e70;
@@ -71,20 +96,28 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0c0f16;
-  --surface: #151a24;
-  --surface-2: #1d2432;
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #edf1f7;
+  --bg: #0a0e17;
+  --surface: #141824;
+  --surface-2: #1d2431;
+  --border: rgba(255, 255, 255, 0.07);
+  --text: #eaf0f8;
   --text-2: #9aa5ba;
   --text-3: #64708a;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-hero: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 48px -16px rgba(0, 0, 0, 0.5);
-  --cool: #4d94ff;
+  --cool: #4d9fff;
+  --cool-2: #59e3d8;
   --heat: #ff8a4d;
+  --heat-2: #ffb35c;
   --fan: #2cc7a6;
+  --fan-2: #6fe6c3;
   --dry: #eaaf3b;
+  --dry-2: #f6cf7d;
   --auto: #a78bfa;
+  --auto-2: #c9b1ff;
+  --ok: #35d49a;
+  --accent-ink: #06131f;
+  --accent-text-w: 100%;
   --s1: #3987e5;
   --s2: #d95926;
   --s3: #199e70;
@@ -93,6 +126,17 @@
   --s6: #008300;
   --s7: #9085e9;
   --s8: #e66767;
+}
+
+/* Derived accent tokens are re-computed inside every scope that overrides
+   --accent (the hero and each AC's zone section set it inline per mode) —
+   custom properties resolve their var() references where they're DECLARED,
+   so the :root copies above would otherwise stay frozen to cool. */
+.ac-hero,
+.zone-section {
+  --accent-text: color-mix(in srgb, color-mix(in srgb, var(--accent) 50%, var(--accent-2)) var(--accent-text-w), #000000);
+  --grad: linear-gradient(135deg, var(--accent), var(--accent-2));
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 /* ---------------------------------------------------------------------------
@@ -132,18 +176,18 @@ input {
 }
 
 .app {
-  max-width: 840px;
+  max-width: 460px;
   margin: 0 auto;
   padding: 0 16px calc(32px + env(safe-area-inset-bottom));
 }
 
-/* Subtle depth behind the page so cards sit on something */
+/* Ambient tint behind the page, keyed to the cool accent */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(60% 40% at 20% -10%, color-mix(in srgb, var(--cool) 7%, transparent), transparent 70%),
+    radial-gradient(70% 45% at 50% -12%, color-mix(in srgb, var(--cool) 9%, transparent), transparent 65%),
     radial-gradient(50% 35% at 90% 0%, color-mix(in srgb, var(--auto) 5%, transparent), transparent 70%);
   pointer-events: none;
   z-index: 0;
@@ -172,39 +216,40 @@ body::before {
 }
 
 .header h1 {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 
 .header .subtitle {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-3);
   font-weight: 500;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   display: grid;
   place-items: center;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
   color: var(--text-2);
   transition: background 0.15s, color 0.15s;
 }
 
 .icon-btn:hover {
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--text) 9%, transparent);
   color: var(--text);
 }
 
@@ -232,245 +277,134 @@ body::before {
 }
 
 /* ---------------------------------------------------------------------------
-   AC hero card
+   AC hero — the halo dial
 --------------------------------------------------------------------------- */
 
-.ac-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-hero);
-  padding: 22px;
-  position: relative;
-  overflow: hidden;
-}
-
-.ac-card:not(.is-off) {
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
-}
-
-.ac-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(110% 100% at 80% -30%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%),
-    radial-gradient(60% 70% at 0% 110%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%);
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.4s;
-}
-
-.ac-card.is-off::before {
-  opacity: 0;
-}
-
-.ac-card > * {
-  position: relative;
-}
-
-.ac-top {
+.ac-hero {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 0 4px;
 }
 
 .ac-title {
-  font-size: 15px;
-  font-weight: 650;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text-2);
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
-.ac-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.power-btn {
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  background: var(--surface-2);
-  color: var(--text-3);
-  border: 1px solid var(--border);
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.power-btn.on {
-  background: var(--accent);
-  color: #fff;
-  border-color: transparent;
-  box-shadow:
-    0 6px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent),
-    0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
-}
-
-.ac-status {
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--text-3);
-  margin-top: 3px;
-}
-
-.ac-status.on {
-  color: var(--accent);
-}
-
-.target-display {
+.dial-block {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 16px;
-  cursor: help;
+  gap: 4px;
 }
 
-.target-display .value {
-  font-size: 32px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  color: var(--accent);
-  line-height: 1;
+.dial-wrap {
+  position: relative;
+  width: min(280px, 78vw);
+  aspect-ratio: 1;
 }
 
-.target-display .value small {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-3);
+.dial-wrap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.target-display .sp-caption {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
+.dial-track {
+  stroke: color-mix(in srgb, var(--text) 8%, transparent);
+  stroke-width: 14;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.dial-progress {
+  stroke-width: 14;
+  stroke-linecap: round;
+  fill: none;
+  transition: d 0.25s;
+}
+
+.dial-range-label {
+  fill: var(--text-3);
+  font-size: 12px;
+  font-family: var(--font);
+}
+
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.dial-caption {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-3);
-  margin-top: 5px;
 }
 
-.ac-card.is-off .target-display .value {
-  color: var(--text-3);
+.dial-value {
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-.power-btn:active {
-  transform: scale(0.94);
+.dial-inside {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 6px;
 }
 
-/* Temperature + setpoint row */
-
-.ac-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 10px 0 18px;
-  flex-wrap: wrap;
-}
-
-.ac-current {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.ac-current .label {
+.dial-status {
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: var(--accent-text);
+  margin-top: 2px;
+}
+
+.ac-hero.is-off .dial-value,
+.ac-hero.is-off .dial-inside,
+.ac-hero.is-off .dial-status {
   color: var(--text-3);
 }
 
-.ac-current .value {
-  font-size: 27px;
-  font-weight: 450;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--text-2);
-}
+/* Power + steppers nested into the dial's mouth */
 
-.ac-current .value .unit {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-3);
-  vertical-align: 0.35em;
-  margin-left: 2px;
-}
-
-.setpoint-ctl {
+.power-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--surface-2);
-  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
-  border-radius: 999px;
-  padding: 7px;
-  box-shadow: 0 8px 28px -12px color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-.setpoint-ctl .sp-value {
-  min-width: 96px;
-  text-align: center;
-  font-size: 32px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  color: var(--accent);
-  line-height: 1;
-}
-
-.setpoint-ctl .sp-value small {
-  font-size: 14px;
-  color: var(--text-3);
-  font-weight: 500;
-}
-
-.setpoint-ctl .sp-caption {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin-top: 4px;
-}
-
-.ac-card.is-off .setpoint-ctl {
-  border-color: var(--border);
-  box-shadow: none;
-}
-
-.ac-card.is-off .setpoint-ctl .sp-value {
-  color: var(--text-3);
+  gap: 18px;
+  margin-top: -50px;
+  position: relative;
 }
 
 .step-btn {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: var(--surface);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   border: 1px solid var(--border);
-  color: var(--text-2);
-  box-shadow: var(--shadow);
+  color: var(--text);
   transition: all 0.15s;
 }
 
 .step-btn:hover {
-  color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  color: var(--accent-text);
 }
 
 .step-btn:active {
@@ -482,84 +416,107 @@ body::before {
   pointer-events: none;
 }
 
-/* Mode + fan selectors */
-
-.ac-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.power-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  color: var(--text-2);
+  transition: all 0.2s;
 }
 
-.seg {
-  display: flex;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 4px;
-  gap: 2px;
+.power-btn.on {
+  background: var(--grad);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow:
+    0 10px 30px -6px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-.seg-btn {
-  flex: 1;
+.power-btn:active {
+  transform: scale(0.94);
+}
+
+/* Mode selector — circles with labels */
+
+.mode-row {
+  display: flex;
+  justify-content: space-between;
+  align-self: stretch;
+  padding: 0 6px;
+}
+
+.mode-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 9px 4px 7px;
-  border-radius: 10px;
+  gap: 6px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
+  color: var(--text-3);
+}
+
+.mode-btn i {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid var(--border);
   color: var(--text-3);
   transition: all 0.18s;
-  min-width: 0;
+  font-style: normal;
 }
 
-.seg-btn span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
+.mode-btn.active {
+  color: var(--text);
+  font-weight: 600;
 }
 
-.seg-btn.active {
-  background: var(--seg-color, var(--accent));
-  color: #fff;
-  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--seg-color, var(--accent)) 55%, transparent);
+.mode-btn.active i {
+  background: var(--grad);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: 0 8px 24px -6px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 /* While the AC is off, the current mode stays marked but looks dormant */
-.ac-card.is-off .seg-btn.active {
-  background: color-mix(in srgb, var(--seg-color, var(--accent)) 14%, transparent);
-  color: var(--seg-color, var(--accent));
+.ac-hero.is-off .mode-btn.active i {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  color: var(--accent-text);
   box-shadow: none;
 }
 
-.ac-card.is-off .chip.active {
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-  color: var(--accent);
+.ac-hero.is-off .mode-btn.active {
+  color: var(--text-2);
 }
+
+/* Fan + preset chips */
 
 .fan-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  align-self: stretch;
+  padding: 0 6px;
 }
 
-.fan-row .fan-label {
-  padding-top: 9px;
-}
-
-.fan-row .fan-label {
+.fan-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-3);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   flex-shrink: 0;
+  padding-top: 9px;
 }
 
 .chip-row {
@@ -569,31 +526,36 @@ body::before {
   flex: 1;
 }
 
-.chip-row::-webkit-scrollbar {
-  display: none;
-}
-
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 14px;
   border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--text-2);
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
   border: 1px solid var(--border);
   white-space: nowrap;
   transition: all 0.15s;
 }
 
 .chip.active {
-  background: var(--accent);
+  background: var(--grad);
   border-color: transparent;
-  color: #fff;
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.ac-hero.is-off .chip.active {
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--accent-text);
 }
 
 .chip .chip-icon {
   display: inline-flex;
-  margin-right: 2px;
 }
 
 .chip-divider {
@@ -604,6 +566,46 @@ body::before {
   flex-shrink: 0;
 }
 
+.chip.open {
+  border-style: dashed;
+  color: var(--text);
+}
+
+.preset-row {
+  display: flex;
+  justify-content: center;
+}
+
+.preset-row .chip-row {
+  justify-content: center;
+  flex: initial;
+}
+
+.timer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  align-self: stretch;
+  animation: panel-in 0.18s ease-out;
+}
+
+.timer-panel .fan-label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Badges
 --------------------------------------------------------------------------- */
@@ -612,9 +614,9 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
-  font-weight: 650;
-  padding: 4px 9px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 7px;
   border-radius: 999px;
   background: var(--surface-2);
   color: var(--text-2);
@@ -622,21 +624,28 @@ body::before {
 }
 
 .badge.warn {
-  background: color-mix(in srgb, var(--warn) 12%, transparent);
-  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 13%, transparent);
+  color: color-mix(in srgb, var(--warn) 80%, var(--text));
   border-color: color-mix(in srgb, var(--warn) 30%, transparent);
 }
 
 .badge.danger {
   background: color-mix(in srgb, var(--danger) 12%, transparent);
-  color: var(--danger);
+  color: color-mix(in srgb, var(--danger) 85%, var(--text));
   border-color: color-mix(in srgb, var(--danger) 30%, transparent);
 }
 
 .badge.accent {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-text);
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.ac-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* ---------------------------------------------------------------------------
@@ -645,231 +654,179 @@ body::before {
 
 .zones-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  margin: 22px 2px 12px;
+  margin: 24px 2px 12px;
 }
 
 .zones-head h2 {
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 .zones-head .count {
   color: var(--text-3);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   margin-left: 8px;
 }
 
 .text-btn {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-2);
+  color: var(--accent-text);
   padding: 7px 12px;
   border-radius: 10px;
   transition: all 0.15s;
 }
 
 .text-btn:hover {
-  background: var(--surface-2);
-  color: var(--text);
+  background: var(--accent-soft);
 }
 
 .zone-list {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .zone-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 13px 16px;
-  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
-.zone-row:last-child {
-  border-bottom: none;
+.zone-row.is-off {
+  background: color-mix(in srgb, var(--surface) 45%, var(--bg));
+  border-color: color-mix(in srgb, var(--border) 60%, transparent);
+  box-shadow: none;
+}
+
+.zr-power {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.zr-power.on {
+  background: var(--grad);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: 0 5px 14px -5px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.zr-power:active {
+  transform: scale(0.92);
 }
 
 .zr-info {
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .zr-name-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .zr-name {
-  font-size: 15px;
-  font-weight: 650;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.zone-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.zone-row.is-off .zr-name {
+  color: var(--text-2);
 }
 
 .zr-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   font-size: 11.5px;
   color: var(--text-3);
-  font-weight: 550;
   font-variant-numeric: tabular-nums;
 }
 
-.zr-meta .bar {
-  width: 110px;
-  max-width: 45vw;
-  height: 4px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  overflow: hidden;
-  display: block;
-}
-
-.zr-meta .bar i {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--text-3);
-  opacity: 0.5;
-  transition: width 0.5s;
-}
-
-.zr-temp {
-  font-size: 15.5px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+.zr-now {
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--text-2);
+  font-style: normal;
 }
 
-.zr-temp .unit {
-  font-size: 12px;
-  color: var(--text-3);
+.zone-row.is-off .zr-meta {
+  opacity: 0.75;
 }
 
-.zr-temp .stale {
+.zr-meta .stale {
   display: inline-flex;
-  vertical-align: -1px;
-  margin-right: 4px;
   color: var(--text-3);
-}
-
-.zr-temp.na {
-  color: var(--text-3);
-  font-size: 15px;
 }
 
 .zr-sp {
   display: flex;
   align-items: center;
   gap: 2px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   border-radius: 999px;
   padding: 3px;
-}
-
-.zone-row:not(.is-off) .zr-sp {
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  flex-shrink: 0;
 }
 
 .zr-sp .sp-value {
-  min-width: 50px;
+  min-width: 46px;
   text-align: center;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  color: var(--accent-text);
+}
+
+.zone-row.is-off .zr-sp {
+  opacity: 0.45;
+}
+
+.zone-row.is-off .zr-sp .sp-value {
+  color: var(--text);
 }
 
 .zr-sp .step-btn {
   width: 32px;
   height: 32px;
-  box-shadow: none;
+  background: none;
+  border: none;
+  color: var(--text-2);
 }
 
-.zone-row.is-off .zr-temp,
-.zone-row.is-off .zr-sp,
-.zone-row.is-off .zr-meta,
-.zone-row.is-off .zone-dot {
-  opacity: 0.45;
-}
-
-@media (max-width: 480px) {
-  .zone-row {
-    gap: 8px;
-    padding: 12px 12px;
-  }
-  .zr-sp .sp-value {
-    min-width: 42px;
-    font-size: 15px;
-  }
-  .zr-sp .step-btn {
-    width: 30px;
-    height: 30px;
-  }
-  .zr-meta .bar {
-    width: 70px;
-  }
-}
-
-.zone-toggle {
-  width: 46px;
-  height: 28px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  position: relative;
-  transition: background 0.2s, border-color 0.2s;
-  flex-shrink: 0;
-}
-
-.zone-toggle::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.zone-toggle.on {
-  background: var(--accent);
-  border-color: transparent;
-}
-
-.zone-toggle.on::after {
-  transform: translateX(18px);
-}
-
-/* Two-pane layout: thermostat panel beside the zones list on wide screens */
+/* ---------------------------------------------------------------------------
+   Layout: hero beside zones on wide screens
+--------------------------------------------------------------------------- */
 
 .layout {
   display: flex;
@@ -884,17 +841,24 @@ body::before {
 
 @media (min-width: 920px) {
   .app {
-    max-width: 1120px;
+    max-width: 1160px;
   }
   .layout {
     display: grid;
-    grid-template-columns: 400px minmax(0, 1fr);
-    gap: 28px;
+    grid-template-columns: 430px minmax(0, 1fr);
+    gap: 36px;
     align-items: start;
   }
   .layout-side {
     position: sticky;
     top: 78px;
+  }
+  .ac-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-hero);
+    padding: 26px 22px 22px;
   }
   .layout-main .zones-head:first-child {
     margin-top: 2px;
@@ -915,13 +879,13 @@ body::before {
 .connect-screen .logo {
   width: 72px;
   height: 72px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, var(--cool), color-mix(in srgb, var(--cool) 50%, var(--auto)));
+  border-radius: 50%;
+  background: var(--grad);
   display: grid;
   place-items: center;
-  color: #fff;
+  color: var(--accent-ink);
   margin: 0 auto 20px;
-  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--cool) 50%, transparent);
+  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
 .connect-screen h2 {
@@ -945,13 +909,13 @@ body::before {
   gap: 8px;
   width: 100%;
   padding: 14px 20px;
-  border-radius: 14px;
-  background: var(--accent);
-  color: #fff;
+  border-radius: 999px;
+  background: var(--grad);
+  color: var(--accent-ink);
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   transition: all 0.15s;
-  box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 60%, transparent);
+  box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .primary-btn:hover {
@@ -994,7 +958,7 @@ body::before {
 }
 
 .console-item .name {
-  font-weight: 650;
+  font-weight: 600;
   font-size: 14px;
 }
 
@@ -1031,8 +995,8 @@ body::before {
 
 .ip-input {
   flex: 1;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -1069,20 +1033,20 @@ body::before {
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   font-size: 13.5px;
-  font-weight: 550;
+  font-weight: 500;
   margin-bottom: 14px;
 }
 
 .banner.danger {
   background: color-mix(in srgb, var(--danger) 10%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
-  color: var(--danger);
+  color: color-mix(in srgb, var(--danger) 85%, var(--text));
 }
 
 .banner.warn {
   background: color-mix(in srgb, var(--warn) 10%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
-  color: var(--warn);
+  color: color-mix(in srgb, var(--warn) 80%, var(--text));
 }
 
 .banner .spacer {
@@ -1090,7 +1054,7 @@ body::before {
 }
 
 .banner button {
-  font-weight: 650;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -1129,7 +1093,7 @@ body::before {
   margin-top: 18vh;
   color: var(--text-3);
   font-size: 14px;
-  font-weight: 550;
+  font-weight: 500;
 }
 
 .spinner {
@@ -1154,14 +1118,19 @@ body::before {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 16px;
-  margin-top: 12px;
+  padding: 14px 12px 12px;
 }
 
 .history-head {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 8px;
+}
+
+.history-head .chip {
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .history-plot {
@@ -1178,13 +1147,13 @@ body::before {
 }
 
 .grid-line {
-  stroke: var(--border);
+  stroke: color-mix(in srgb, var(--text) 7%, transparent);
   stroke-width: 1;
 }
 
 .axis-label {
   fill: var(--text-3);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
 }
 
@@ -1252,7 +1221,7 @@ body::before {
 }
 
 .tt-val {
-  font-weight: 650;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1269,17 +1238,17 @@ body::before {
   gap: 6px;
   padding: 6px 11px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--text-2);
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
   border: 1px solid var(--border);
   transition: all 0.15s;
 }
 
 .legend-chip i {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 
@@ -1289,31 +1258,6 @@ body::before {
 
 .legend-chip.off i {
   background: var(--text-3) !important;
-}
-
-/* Timer panel */
-
-.timer-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  animation: panel-in 0.18s ease-out;
-}
-
-@keyframes panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
-.chip.open {
-  border-style: dashed;
-  color: var(--text);
 }
 
 /* Multi-AC section titles */

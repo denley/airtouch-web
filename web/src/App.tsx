@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AcCard, acAccentColor } from './components/AcCard'
+import { AcCard, acAccentStyle } from './components/AcCard'
 import { ConnectScreen } from './components/ConnectScreen'
 import { HistoryChart } from './components/HistoryChart'
 import { MoonIcon, SettingsIcon, SunIcon, WifiOffIcon } from './components/icons'
@@ -180,9 +180,8 @@ export default function App() {
               {acs.map((ac) => {
                 const acZones = zonesByAc.get(ac.id) ?? []
                 if (acZones.length === 0) return null
-                const accent = acAccentColor(ac)
                 return (
-                  <section key={ac.id}>
+                  <section key={ac.id} className="zone-section" style={acAccentStyle(ac)}>
                     <div className="zones-head">
                       <h2>
                         {acs.length > 1 ? `${ac.name} zones` : 'Zones'}
@@ -204,7 +203,7 @@ export default function App() {
                         {anyZoneOn ? 'All off' : 'All on'}
                       </button>
                     </div>
-                    <div className="zone-list" style={{ ['--accent' as string]: accent }}>
+                    <div className="zone-list">
                       {acZones.map((zone) => (
                         <ZoneRow
                           key={zone.id}

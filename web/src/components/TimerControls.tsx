@@ -32,7 +32,7 @@ export function TimerControls({ ac, onQuickTimer, onCancelTimer, presetChips }: 
 
   return (
     <>
-      <div className="fan-row">
+      <div className="preset-row">
         <div className="chip-row">
           {presetChips}
           <span className="chip-divider" aria-hidden />
