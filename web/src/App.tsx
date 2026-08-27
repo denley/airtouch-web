@@ -229,12 +229,12 @@ export default function App() {
               })}
 
               {zones.some((z) => z.hasSensor) && (
-                <>
+                <section className="zone-section" style={acs.length ? acAccentStyle(acs[0]) : undefined}>
                   <div className="zones-head">
                     <h2>History</h2>
                   </div>
                   <HistoryChart zones={zones} />
-                </>
+                </section>
               )}
             </div>
           </div>
