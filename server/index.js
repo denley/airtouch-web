@@ -288,10 +288,13 @@ function seedDemoHistory(sim) {
 server.listen(PORT, async () => {
   console.log(`AirTouch web bridge listening on http://localhost:${PORT}`)
   history.start(() => currentState())
-  process.on('SIGINT', () => {
-    history.save()
-    process.exit(0)
-  })
+  // SIGTERM is what `docker stop` sends.
+  for (const signal of ['SIGINT', 'SIGTERM']) {
+    process.on(signal, () => {
+      history.save()
+      process.exit(0)
+    })
+  }
 
   // `--sim` (or AIRTOUCH_SIM=1) runs an embedded simulated console and
   // connects to it — handy for trying the app without hardware.
