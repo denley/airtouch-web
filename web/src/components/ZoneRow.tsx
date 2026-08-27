@@ -2,7 +2,7 @@ import type { ZoneState } from '../types'
 import { formatSetpoint } from './AcCard'
 import { seriesVar } from './HistoryChart'
 import { StepButton } from './StepButton'
-import { BatteryLowIcon, BoltIcon, MinusIcon, PlusIcon, WindIcon } from './icons'
+import { BatteryLowIcon, BoltIcon, ClockIcon, MinusIcon, PlusIcon, WindIcon } from './icons'
 
 interface Props {
   zone: ZoneState
@@ -55,6 +55,14 @@ export function ZoneRow({ zone, setpointRange, onPower, onPercent, onSetpoint }:
       <div className={`zr-temp${zone.currentTemp == null ? ' na' : ''}`}>
         {zone.currentTemp != null ? (
           <>
+            {zone.tempStale && (
+              <span
+                className="stale"
+                title="Reading hasn't changed in over 3 hours — the sensor may have stopped reporting"
+              >
+                <ClockIcon size={12} />
+              </span>
+            )}
             {zone.currentTemp.toFixed(1)}
             <span className="unit">°</span>
           </>

@@ -53,12 +53,23 @@ function connectTo(ip, name, { persist = true } = {}) {
   if (persist) saveConfig(config)
 }
 
+// A wireless sensor whose reading hasn't moved at all for this long has
+// likely stopped reporting (out of range, stuck) — the console keeps
+// repeating the last value it heard, so the UI should hint at it.
+const STALE_TEMP_WINDOW = 3 * 3600_000
+
 function currentState() {
   if (!client) {
     return { connection: { status: 'unconfigured' }, acs: [], zones: [] }
   }
   const state = client.getState()
   if (config.consoleName) state.connection.consoleName = config.consoleName
+  for (const zone of state.zones) {
+    zone.tempStale =
+      zone.hasSensor &&
+      zone.currentTemp != null &&
+      history.isFlat(zone.id, zone.currentTemp, STALE_TEMP_WINDOW)
+  }
   return state
 }
 

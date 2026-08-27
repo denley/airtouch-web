@@ -771,6 +771,13 @@ body::before {
   color: var(--text-3);
 }
 
+.zr-temp .stale {
+  display: inline-flex;
+  vertical-align: -1px;
+  margin-right: 4px;
+  color: var(--text-3);
+}
+
 .zr-temp.na {
   color: var(--text-3);
   font-size: 15px;

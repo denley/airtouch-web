@@ -60,6 +60,8 @@ export interface ZoneState {
   hasSensor: boolean
   spill: boolean
   lowBattery: boolean
+  /** The reading hasn't changed for hours — the sensor may have stopped reporting. */
+  tempStale?: boolean
 }
 
 export type ConnectionStatus = 'unconfigured' | 'connecting' | 'connected' | 'disconnected'

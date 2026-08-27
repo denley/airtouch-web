@@ -58,6 +58,25 @@ export class History {
     while (this.samples.length && this.samples[0].t < cutoff) this.samples.shift()
   }
 
+  /**
+   * True when every recorded temperature for the zone over the past window
+   * equals `value` — a reading that flat means the sensor has likely stopped
+   * reporting. Requires samples spanning most of the window, so a freshly
+   * started history can't false-flag.
+   */
+  isFlat(zoneId, value, windowMs) {
+    const cutoff = Date.now() - windowMs
+    let oldest = null
+    for (const s of this.samples) {
+      if (s.t < cutoff) continue
+      const temp = s.zones[zoneId]
+      if (temp == null) continue
+      if (temp !== value) return false
+      if (oldest == null) oldest = s.t
+    }
+    return oldest != null && oldest - cutoff < windowMs * 0.1
+  }
+
   list(sinceMs) {
     const cutoff = Date.now() - sinceMs
     return this.samples.filter((s) => s.t >= cutoff)
