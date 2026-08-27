@@ -1,4 +1,4 @@
-Both dev and deployment run from the master branch
+Both dev and deployment run from the main branch
 
 
 
