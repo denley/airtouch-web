@@ -5,5 +5,9 @@ services:
     # Host networking so UDP broadcast discovery of the console works.
     network_mode: host
     restart: unless-stopped
+    environment:
+      # Local timezone, for day boundaries in long-range history. Set TZ in
+      # .env next to this file (e.g. TZ=Australia/Adelaide).
+      - TZ=${TZ:-UTC}
     volumes:
       - ./data:/app/data

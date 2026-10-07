@@ -1,6 +1,7 @@
 import http from 'node:http'
 import fs from 'node:fs'
 import path from 'node:path'
+import zlib from 'node:zlib'
 import { fileURLToPath } from 'node:url'
 import { WebSocketServer } from 'ws'
 import { AirTouchClient } from './airtouch/client.js'
@@ -33,7 +34,8 @@ function saveConfig(config) {
 let config = loadConfig()
 
 const IS_SIM = process.argv.includes('--sim') || process.env.AIRTOUCH_SIM === '1'
-const history = new History(path.join(DATA_DIR, 'history.json'), { persist: !IS_SIM })
+const history = new History(path.join(DATA_DIR, 'history.db'), { persist: !IS_SIM })
+if (!IS_SIM) history.importJson(path.join(DATA_DIR, 'history.json'))
 
 // ---------------------------------------------------------------------------
 // AirTouch client lifecycle
@@ -111,8 +113,14 @@ function serveStatic(req, res) {
 async function handleApi(req, res) {
   const url = new URL(req.url, 'http://x')
   const json = (code, body) => {
+    const data = JSON.stringify(body)
+    // History responses run to tens of KB; worth compressing for phones on the tailnet.
+    if (data.length > 2048 && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+      res.writeHead(code, { 'Content-Type': 'application/json', 'Content-Encoding': 'gzip' })
+      return res.end(zlib.gzipSync(data))
+    }
     res.writeHead(code, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify(body))
+    res.end(data)
   }
 
   try {
@@ -131,8 +139,11 @@ async function handleApi(req, res) {
       return json(200, currentState())
     }
     if (url.pathname === '/api/history' && req.method === 'GET') {
-      const hours = Math.min(48, Math.max(1, Number(url.searchParams.get('hours')) || 24))
-      return json(200, { samples: history.list(hours * 3600_000) })
+      const num = (key) => (url.searchParams.has(key) ? Number(url.searchParams.get(key)) : undefined)
+      return json(
+        200,
+        history.query({ from: num('from'), to: num('to'), points: num('points'), tzOffset: num('tz') }),
+      )
     }
     return json(404, { error: 'not found' })
   } catch (err) {
@@ -240,45 +251,51 @@ async function handleCommand(msg) {
   }
 }
 
-// Fill history with plausible past data so the chart demos nicely in sim mode.
+// Fill history with a year of plausible past data so the chart demos nicely in
+// sim mode: daily and seasonal swings, minute samples for the last two days and
+// five-minute samples before that (keeps startup quick).
 function seedDemoHistory(sim) {
   const now = Date.now()
   const day = 24 * 3600_000
-  const startHour = new Date(now - day).getHours() + new Date(now - day).getMinutes() / 60
-  const startDaily = Math.sin(((startHour - 14) / 24) * 2 * Math.PI)
-  const temps = new Map(
-    sim.zones
-      .filter((z) => z.currentTemp != null)
-      .map((z) => [z.id, 23 + startDaily * 2.5 + z.id * 0.4]),
-  )
+  const sensorZones = sim.zones.filter((z) => z.currentTemp != null)
+  const target = (t, id) => {
+    const d = new Date(t)
+    const daily = Math.sin(((d.getHours() + d.getMinutes() / 60 - 14) / 24) * 2 * Math.PI) // warmest mid-afternoon
+    const seasonal = Math.cos(((t / day - 17) / 365.25) * 2 * Math.PI) // warmest mid-January
+    return 21 + seasonal * 4 + daily * 2.5 + id * 0.4
+  }
+  const start = now - 365 * day
+  const temps = new Map(sensorZones.map((z) => [z.id, target(start, z.id)]))
   const raw = []
-  for (let t = now - day; t < now; t += 60_000) {
-    const hourOfDay = new Date(t).getHours() + new Date(t).getMinutes() / 60
-    const daily = Math.sin(((hourOfDay - 14) / 24) * 2 * Math.PI) // warmest mid-afternoon
+  for (let t = start; t < now; ) {
+    const interval = t < now - 2 * day ? 300_000 : 60_000
+    const minutes = interval / 60_000
     const zones = {}
     for (const [id, temp] of temps) {
-      const target = 23 + daily * 2.5 + id * 0.4
-      const next = temp + (target - temp) * 0.03 + (Math.random() - 0.5) * 0.12
+      const next =
+        temp +
+        (target(t, id) - temp) * (1 - 0.97 ** minutes) +
+        (Math.random() - 0.5) * 0.12 * Math.sqrt(minutes)
       temps.set(id, next)
       zones[id] = next
     }
     raw.push({ t, zones })
+    t += interval
   }
-  // Morph each series so its final value meets the sim's live temperature —
+  // Morph the last day of each series so it meets the sim's live temperature —
   // otherwise the first real sample after startup shows a vertical jump.
-  const offsets = new Map(
-    sim.zones
-      .filter((z) => z.currentTemp != null)
-      .map((z) => [z.id, z.currentTemp - raw[raw.length - 1].zones[z.id]]),
+  const last = raw[raw.length - 1].zones
+  const offsets = new Map(sensorZones.map((z) => [z.id, z.currentTemp - last[z.id]]))
+  history.record(
+    raw.map(({ t, zones }) => {
+      const progress = Math.max(0, 1 - (now - t) / day)
+      const rounded = {}
+      for (const [id, v] of Object.entries(zones)) {
+        rounded[id] = Math.round((v + offsets.get(Number(id)) * progress) * 10) / 10
+      }
+      return { t, zones: rounded, acs: { 0: rounded[0] ?? 23 } }
+    }),
   )
-  raw.forEach((sample, i) => {
-    const progress = i / (raw.length - 1)
-    const zones = {}
-    for (const [id, v] of Object.entries(sample.zones)) {
-      zones[id] = Math.round((v + (offsets.get(Number(id)) ?? 0) * progress) * 10) / 10
-    }
-    history.samples.push({ t: sample.t, zones, acs: { 0: zones[0] ?? 23 } })
-  })
 }
 
 // ---------------------------------------------------------------------------
@@ -291,7 +308,7 @@ server.listen(PORT, async () => {
   // SIGTERM is what `docker stop` sends.
   for (const signal of ['SIGINT', 'SIGTERM']) {
     process.on(signal, () => {
-      history.save()
+      history.close()
       process.exit(0)
     })
   }

@@ -21,8 +21,11 @@ two parts:
   time and cancellable with a tap
 - **Zone control**: on/off, damper percentage slider, temperature setpoint for zones with sensors,
   press-and-hold to step setpoints quickly
-- **Temperature history**: the bridge records zone temperatures once a minute (48h retained) and
-  charts them with hover details; each zone's chart colour matches the dot on its card
+- **Temperature history**: the bridge records zone temperatures once a minute and keeps them
+  indefinitely. The chart covers 3 hours to all-time, steps back through earlier periods, shows
+  hover details (with each bucket's min–max spread on long ranges), and matches each zone's colour
+  to the dot on its card. Queries are downsampled on the server to at most ~1000 points from
+  hourly/daily rollups, so the chart stays fast however much history builds up
 - **Live state**: the console pushes changes (from wall panels, the official app, schedules) and the
   UI updates instantly in every open browser; changes made here show up optimistically and reconcile
   with the console
@@ -83,7 +86,11 @@ over TCP, including reconnect behaviour.
 - Ports used by the console: UDP `49005` (discovery), TCP `9005` (control protocol).
 - The bridge keeps a single TCP connection to the console and fans state out to any number of
   browser tabs.
-- History is stored in `data/history.json`; the chosen console in `data/config.json`.
+- History is stored in `data/history.db` (SQLite, roughly 90 MB per year with eight zones); the
+  chosen console in `data/config.json`. A `data/history.json` from older versions is imported on
+  first start and renamed to `history.json.imported`.
+- Day boundaries in long-range history use the server's timezone: set `TZ` (for Docker, in a `.env`
+  file next to `compose.yaml`, e.g. `TZ=Australia/Adelaide`).
 
 ## Acknowledgements
 

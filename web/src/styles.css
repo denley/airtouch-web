@@ -1123,8 +1123,67 @@ body::before {
 
 .history-head {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-bottom: 8px;
+}
+
+.history-head .chip-row {
+  flex: initial;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.history-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--text-2);
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+  color: var(--text);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.history-span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+.history-now {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-text);
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+
+.history-now:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .history-head .chip {
@@ -1136,6 +1195,15 @@ body::before {
 .history-plot {
   position: relative;
   touch-action: pan-y;
+  transition: opacity 0.15s;
+}
+
+.history-plot.loading {
+  opacity: 0.5;
+}
+
+.series-band {
+  fill-opacity: 0.12;
 }
 
 .history-empty {
@@ -1189,6 +1257,8 @@ body::before {
   pointer-events: none;
   box-shadow: var(--shadow);
   min-width: 130px;
+  width: max-content;
+  max-width: 240px;
   z-index: 5;
 }
 
@@ -1223,6 +1293,13 @@ body::before {
 .tt-val {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+.tt-range {
+  color: var(--text-3);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
 }
 
 .legend-row {

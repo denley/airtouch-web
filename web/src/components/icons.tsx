@@ -210,3 +210,19 @@ export function MoonIcon({ size, className }: IconProps) {
     </svg>
   )
 }
+
+export function ChevronLeftIcon({ size, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  )
+}
+
+export function ChevronRightIcon({ size, className }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  )
+}
